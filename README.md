@@ -13,7 +13,7 @@ a .zip file. To do that,
 5. download the offline book in .zip format,
 6. extract the .zip file somewhere.
 
-At this point you will get a large .html file and a folder *GeoGebra* with
+At this point you will get a large .html file and a folder `GeoGebra` with
 several files, including the web version of GeoGebra and all materials
 included in the book, also additional artwork and screenshots.
 
