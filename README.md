@@ -1,6 +1,6 @@
 # GeoGebraBook2LaTeX
 
-This script can convert a GeoGebra book, given in HTML format and as a
+This program can convert a GeoGebra book, given in HTML format and as a
 set of images, into LaTeX, and then into PDF.
 
 GeoGebra books can be created at https://www.geogebra.org by downloading
@@ -47,15 +47,15 @@ and then re-issue the command `pdflatex FULL-FILENAME-OF-THE-GEOGEBRA-BOOK.tex`.
 
 Good luck!
 
-# Disclaimer
+## Disclaimer
 
 The script works well in many situations, but certainly not always.
 Feedback and suggestions for improvements are welcome.
 
-# Author
+## Author
 
 Zoltán Kovács (zoltan@geogebra.org)
 
-# License
+## License
 
 GPL 3
