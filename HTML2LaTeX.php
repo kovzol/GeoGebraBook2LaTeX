@@ -552,6 +552,12 @@ class HTML2LaTeX
         // For handling itemize and enumerate equivalently
         $tex .= "\\usepackage{enumitem}" . PHP_EOL;
 
+        // For listing Python codes
+        $tex .= "\\usepackage{listings,newtxtt}" . PHP_EOL .
+            "\\lstset{basicstyle=\\ttfamily, keywordstyle=\\bfseries, " .
+            "stringstyle=\\color{magenta}, commentstyle=\\color{gray}\\textit}" . PHP_EOL;
+        $tex .= file_get_contents("lstlisting_hack.tex");
+
         // Avoid long lines
         $tex .= "\\tolerance10000" . PHP_EOL;
         // Do not add extra space after period characters
@@ -707,8 +713,19 @@ class HTML2LaTeX
                     $text = $this->textprocessor_start(trim($we->nodeValue));
                     if ($text != "")
                         $elems[$ws] .= "\\subsubsection*{" . $text . "}" . PHP_EOL . PHP_EOL;  // paragraph looks problematic sometimes, FIXME
-                } // Unsupported media
-                else {
+                } elseif ($this->startsWith($type, "ws-element-web")) {
+                    $code = $xpath->query('iframe', $we);
+                    $src = $code->item(0)->getAttribute("src");
+                    $urlpos = strpos($src, "&code=");
+                    if ($urlpos != FALSE) {
+                        $encodedprogram = mb_substr($src, $urlpos + 6); // "&code="
+                        $urldecodedprogram = urldecode($encodedprogram);
+                        $b64decodedprogram = base64_decode($urldecodedprogram);
+                        $program = gzuncompress($b64decodedprogram);
+                        $elems[$ws] .= $this->program($program);
+                    }
+                }
+                else { // Unsupported media
                     // $elems[$ws] .= $this->infobox("Unsupported media type $type");
                 }
             }
@@ -856,6 +873,18 @@ class HTML2LaTeX
             "\\end{figure}" . PHP_EOL . PHP_EOL;
         return $text;
     }
+
+    private function program($program) {
+        // https://tex.stackexchange.com/a/140725/128521
+        $text = "\\begin{lstlisting}[language=Python,breaklines=true,showstringspaces=false,breakatwhitespaces=false,alsoletter={()[].=}]" . PHP_EOL;
+        // https://stackoverflow.com/questions/53788141/php-convert-incorrect-umlauts-utf8
+        $program = iconv('utf-8', 'WINDOWS-1252//TRANSLIT', $program);
+        // This hack may not be needed if the source is correct UTF-8.
+        $text .= $program;
+        $text .= "\\end{lstlisting}" . PHP_EOL;
+        return $text;
+    }
+
 
     function verbose($text, $level = NULL)
     {
