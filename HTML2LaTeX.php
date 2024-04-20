@@ -724,6 +724,8 @@ class HTML2LaTeX
                         $program = gzuncompress($b64decodedprogram);
                         $elems[$ws] .= $this->program($program);
                     }
+                } elseif ($this->startsWith($type, "ws-element-question")) {
+                    $elems[$ws] .= $this->textprocessor_start(trim($we->nodeValue)) . PHP_EOL . PHP_EOL;
                 }
                 else { // Unsupported media
                     // $elems[$ws] .= $this->infobox("Unsupported media type $type");
